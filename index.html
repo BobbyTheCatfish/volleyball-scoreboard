@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="./index.css">
+        <script
+        src="https://code.jquery.com/jquery-4.0.0.min.js"
+        integrity="sha256-OaVG6prZf4v69dPg6PhVattBXkcOWQB62pdZ3ORyrao="
+        crossorigin="anonymous"></script>
+        <script src="./index.js"></script>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <div id="settings" class="modal container" style="justify-content: initial; display: none;">
+            <form onsubmit="saveSettings(event)">
+                <h1>Settings</h1>
+                <div>
+                    <label for="team1input">Team 1 Name</label>
+                    <input id="team1input" name="team1name" placeholder="Team _____">
+                </div>
+                <div>
+                    <label for="score1input">Team 1 Score</label>
+                    <input id="score1input" name="team1score" type="number" value="0">
+                </div>
+                <div>
+                    <label for="color1input">Team 1 Color</label>
+                    <input id="color1input" name="team1color" type="color" value="#FF0000">
+                </div>
+                <br/>
+                <div>
+                    <label for="team2input">Team 2 Name</label>
+                    <input id="team2input" name="team2name" placeholder="Team _____">
+                </div>
+                <div>
+                    <label for="score2input">Team 2 Score</label>
+                    <input id="score2input" name="team2score" type="number" value="0">
+                </div>
+                <div>
+                    <label for="color2input">Team 2 Color</label>
+                    <input id="color2input" name="team2color" type="color" value="#00b7ff">
+                </div>
+                <br/>
+                <label>Serving:</label>
+                <div>
+                    <label for="serving1">Team 1</label>
+                    <input name="serving" type="radio" value="1" id="serving1">
+                    <label for="serving2">Team 2</label>
+                    <input name="serving" type="radio" value="2" id="serving2">
+                </div>
+                <br/>
+                <div>
+                    <label for="goal">Goal</label>
+                    <input name="goal" type="number" value="25" id="goal">
+                </div>
+                <div>
+                    <label for="voiceName">TTS Voice</label>
+                    <select name="voiceName" value="Google US English" id="voiceName">
+                        <!-- <option></option> -->
+                    </select>
+                </div>
+                <div style="width: 400px; max-width: 100%;">
+                    <button onclick="resetGame(event)">Reset Game</button>
+                </div>
+    
+                <button class="SettingsButton" type="submit">Save</button>
+            </form>
+        </div>
+        <div class="container">
+            <button onclick="announceScore()" class="AnnounceButton">
+                Announce Score
+            </button>
+            <div class="box" id="score1" style="background-color: rgb(255, 0, 0);">
+                <p class="score">0</p>
+            </div>
+            <!-- <div class="divider"></div> -->
+            <div class="box" id="score2" style="background-color: #00b7ff;">
+                <p class="score">0</p>
+            </div>
+            <button onclick="openSettings()">
+                Settings
+            </button>
+        </div>
+    </body>
+</html>
