@@ -48,9 +48,9 @@ function speak(text, delay = 500) {
         track.play();
 
         const interval = setInterval(() => {
-            if (speechSynthesis.speaking) track.play();
+            if (speechSynthesis.speaking) track.currentTime = 0;
             else clearInterval(interval);
-        }, 2_500);
+        }, 2_000);
 
     }, delay);
 }
@@ -187,6 +187,17 @@ function announceScore() {
 }
 
 function openSettings() {
+    const voiceInput = $("#voiceName")
+    const voices = speechSynthesis.getVoices();
+
+    if (voiceInput.children().length == 0) {
+        for (const voice of voices) {
+            // if (!voice.lang.startsWith("en-")) continue;
+            voiceInput.append(`<option value="${voice.name}">${voice.name}</option>`)
+        }
+    }
+
+
     $("#settings").show();
 }
 
