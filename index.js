@@ -49,7 +49,10 @@ function speak(text, delay = 500) {
 
         const interval = setInterval(() => {
             if (speechSynthesis.speaking) track.currentTime = 0;
-            else clearInterval(interval);
+            else {
+                clearInterval(interval);
+                track.pause();
+            }
         }, 2_000);
 
     }, delay);
@@ -120,7 +123,7 @@ function onDoubleClick(teamId) {
             // play whistle
             const track = new Audio("public/Whistle.mp3");
             track.play();
-            delay = 2_000;
+            delay = 1_750;
         } else if (difference > 0) {
             text += ". GAME POINT!";
 
