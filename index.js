@@ -1,21 +1,22 @@
 // @ts-check
 
-// Load voices
-let u = new SpeechSynthesisUtterance("");
-speechSynthesis.speak(u);
 
 // Add button handlers
 $(() => {
     $("#score1").on("dblclick", () => onDoubleClick(1));
     $("#score2").on("dblclick", () => onDoubleClick(2));
-
+    
     const voiceInput = $("#voiceName")
     const voices = speechSynthesis.getVoices();
 
     for (const voice of voices) {
-        if (!voice.lang.startsWith("en-")) continue;
+        // if (!voice.lang.startsWith("en-")) continue;
         voiceInput.append(`<option value="${voice.name}">${voice.name}</option>`)
     }
+    
+    // Load voices
+    let u = new SpeechSynthesisUtterance("");
+    speechSynthesis.speak(u);
 
     updateScores();
 })
@@ -24,7 +25,7 @@ $(() => {
  * @param {string} text 
  * @param {number} delay 
  */
-function speak(text, delay = 300) {
+function speak(text, delay = 500) {
     let voices = speechSynthesis.getVoices();
 
     let voice = voices?.find(v => v.name == voiceName);
@@ -45,10 +46,11 @@ function speak(text, delay = 300) {
 
         const track = new Audio("public/Silence.mp3");
         track.play();
-        track.onended = () => {
+
+        const interval = setInterval(() => {
             if (speechSynthesis.speaking) track.play();
-            else console.log("not playing silence");
-        }
+            else clearInterval(interval);
+        }, 2_500);
 
     }, delay);
 }
@@ -118,7 +120,7 @@ function onDoubleClick(teamId) {
             // play whistle
             const track = new Audio("public/Whistle.mp3");
             track.play();
-            delay = 3_000;
+            delay = 2_000;
         } else if (difference > 0) {
             text += ". GAME POINT!";
 
