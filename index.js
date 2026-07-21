@@ -13,36 +13,51 @@ $(() => {
     const voices = speechSynthesis.getVoices();
 
     for (const voice of voices) {
-        if (voice.localService) continue;
-        if (!voice.name.includes("English")) continue;
-
+        if (!voice.lang.startsWith("en-")) continue;
         voiceInput.append(`<option value="${voice.name}">${voice.name}</option>`)
     }
+
+    updateScores();
 })
 
 /**
  * @param {string} text 
+ * @param {number} delay 
  */
-function speak(text) {
+function speak(text, delay = 300) {
     let voices = speechSynthesis.getVoices();
 
     let voice = voices?.find(v => v.name == voiceName);
-
+    
     let utterance = new SpeechSynthesisUtterance(text);
     utterance.rate = 0.8;
-
+    
     if (voice) {
         utterance.voice = voice;
     }
-
+    
     speechSynthesis.cancel();
-    speechSynthesis.speak(utterance);
+    speakCount++;
+    const count = speakCount;
+    setTimeout(() => {
+        if (count != speakCount) return;
+        speechSynthesis.speak(utterance);
+
+        const track = new Audio("public/Silence.mp3");
+        track.play();
+        track.onended = () => {
+            if (speechSynthesis.speaking) track.play();
+            else console.log("not playing silence");
+        }
+
+    }, delay);
 }
 
 // State
 let serving = 0;
 let goal = 25;
 let voiceName = "Google US English";
+let speakCount = 0;
 
 let team1 = {
     name: "",
@@ -89,6 +104,7 @@ function onDoubleClick(teamId) {
     updateScores();
 
     let text = getScoreString();
+    let delay = 0;
 
     // match point
     if ((team1.score >= goal - 1) || (team2.score >= goal - 1)) {
@@ -102,11 +118,7 @@ function onDoubleClick(teamId) {
             // play whistle
             const track = new Audio("public/Whistle.mp3");
             track.play();
-            setTimeout(() => {            
-                speak(text);
-            }, 3_000);
-
-            return;
+            delay = 3_000;
         } else if (difference > 0) {
             text += ". GAME POINT!";
 
@@ -118,7 +130,7 @@ function onDoubleClick(teamId) {
         }
     }
 
-    speak(text);
+    speak(text, delay);
 }
 
 function updateScores() {
@@ -135,6 +147,7 @@ function updateScores() {
     const colorSetting1 = $("#color1input");
     const colorSetting2 = $("#color2input");
     const goalSetting = $("#goal");
+    const langSetting = $("#voiceName");
 
     scoreSetting1.attr("value", team1.score);
     scoreSetting2.attr("value", team2.score);
@@ -146,6 +159,10 @@ function updateScores() {
     colorSetting2.attr("value", team2.color);
 
     goalSetting.attr("value", goal);
+
+    for (const child of langSetting.children("option")) {
+        child.selected = voiceName == child.value;
+    }
 
     scoreElement1.parent().css("background-color", team1.color)
     scoreElement2.parent().css("background-color", team2.color)
